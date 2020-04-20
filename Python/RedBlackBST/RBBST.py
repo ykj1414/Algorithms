@@ -144,7 +144,7 @@ class RedBlackBST(object):
         return root
 
     def __balance(self,root):
-        if self.__color(root.right):
+        if self.__color(root.right) and not self.__color(root.left):
             root = self.__rotateleft(root)
         if self.__color(root.left) and self.__color(root.right):
             self.__flipColors(root)
