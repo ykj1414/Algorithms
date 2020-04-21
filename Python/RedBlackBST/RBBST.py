@@ -126,10 +126,9 @@ class RedBlackBST(object):
     #所以后续需要balance方法将结构修复
     def __moveRedLeft(self,root):
         self.__flipColors(root)
-        if self.__color(root.right.left):
+        if self.__color(root.right.left) and not self.__color(root.left.left):
             root.right = self.__rotateright(root.right)
             root = self.__rotateleft(root)
-            self.__flipColors(root)
             self.__flipColors(root)
         return root
 
@@ -138,7 +137,7 @@ class RedBlackBST(object):
         #如果root.left.left是红色，说明原来的root.left是黑色
         #经过翻转已经时root.left和root.right都为红色，黑链接不减少
         #反之需要将右侧的黑链接变为红链接，保证叶子节点到根节点的黒链接数都一致
-        if self.__color(root.left.left):
+        if self.__color(root.left.left) and not self.__color(root.right.left):
             root = self.__rotateright(root)
             self.__flipColors(root)
         return root
@@ -146,10 +145,10 @@ class RedBlackBST(object):
     def __balance(self,root):
         if self.__color(root.right) and not self.__color(root.left):
             root = self.__rotateleft(root)
-        if self.__color(root.left) and self.__color(root.right):
-            self.__flipColors(root)
         if self.__color(root.left) and self.__color(root.left.left):
             root = self.__rotateright(root)
+        if self.__color(root.left) and self.__color(root.right):
+            self.__flipColors(root)
         root.count = self.__size(root.left)+self.__size(root.right)+1
         return root
 
@@ -161,7 +160,7 @@ class RedBlackBST(object):
     def __delete(self,root,key):
         if root.key>key:
             if not self.__color(root.left) and not self.__color(root.left.left):
-                root.left = self.__moveRedLeft(root.left)
+                root= self.__moveRedLeft(root)
             root.left = self.__delete(root.left,key)
         else:
             if self.__color(root.left):
