@@ -1,0 +1,50 @@
+//python 版本 超时，使用dfs加dp的思想
+class Solution(object):
+    def maxDotProduct(self, nums1, nums2):
+        """
+        :type nums1: List[int]
+        :type nums2: List[int]
+        :rtype: int
+        """
+        ends = {}
+        nums_map = [[] for i in range(len(nums1))]
+        res = [nums1[0]*nums2[0]]
+
+        for i in range(len(nums1)):
+            for j in range(len(nums2)):
+                cur = nums1[i]*nums2[j]
+                res[0] = max(res[0],cur)
+                nums_map[i].append(cur)
+                if cur>0:
+                    if not i in ends:
+                        ends[i] = {}
+                    ends[i][j]=cur
+                    for ci in ends:
+                        if ci <i:
+                            for cj in ends[ci]:
+                                if cj<j:
+                                    ends[i][j] = max(ends[i][j],cur+ends[ci][cj])
+                    res[0] = max(res[0],ends[i][j])
+        return res[0]
+
+//java版本 纯dp 整理出状态转移关系式即可写出dp解法
+class Solution {
+    public int maxDotProduct(int[] nums1, int[] nums2) {
+        int l1 = nums1.length+1;
+        int l2 = nums2.length+1;
+        int [][]dp= new int[l1][l2];
+        for(int i = 0;i<l1;i++)
+            for(int j = 0;j<l2;j++)
+                dp[i][j] = -1*1000_0000;
+        for(int i = 1;i<l1;i++){
+            for(int j = 1;j<l2;j++){
+                dp[i][j] = nums1[i-1]*nums2[j-1];
+                dp[i][j] = Math.max(dp[i][j],dp[i][j]+dp[i-1][j-1]);
+                dp[i][j] = Math.max(dp[i][j],dp[i][j-1]);
+                dp[i][j] = Math.max(dp[i][j],dp[i-1][j]);
+                //dp[i][j] = Math.max(dp[i][j],dp[i-1][j-1]);
+            }
+        }
+        return dp[l1-1][l2-1];
+    }
+}
